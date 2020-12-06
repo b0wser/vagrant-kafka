@@ -3,10 +3,11 @@
 
 Vagrant.configure("2") do |config|
 
-  config.vm.box = "generic/centos6"
+  config.vm.box = "ubuntu/xenial64"
   config.ssh.forward_agent = true # So that boxes don't have to setup key-less ssh
   config.ssh.insert_key = false # To generate a new ssh key and don't use the default Vagrant one 
   config.vm.synced_folder "scripts", "/vagrant/scripts"
+  config.vm.synced_folder "config", "/vagrant/config"
 
   vars = { 
      "KAFKA_VERSION" => "2.6.0",
@@ -36,6 +37,9 @@ Vagrant.configure("2") do |config|
   # configure brokers
   (1..3).each do |i|
     config.vm.define "broker#{i}" do |s|
+      s.vm.provider "virtualbox" do |vb|
+        vb.memory = "2048"
+      end
       s.vm.hostname = "broker#{i}"
       s.vm.network "private_network", ip: "10.30.3.#{4-i}0"
       #s.vm.network "private_network", ip: "10.30.3.#{4-i}0", netmask: "255.255.255.0", virtualbox__intnet: "my-network", drop_nat_interface_default_route: true

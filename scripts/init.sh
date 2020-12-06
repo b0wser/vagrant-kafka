@@ -2,6 +2,10 @@
 
 echo "downloading kafka...$KAFKA_VERSION"
 
+
+su -c "apt-get -y update"
+su -c "apt-get -y install wget"
+
 #download kafka binaries if not present
 if [ ! -f  $KAFKA_TARGET/$KAFKA_NAME.tgz ]; then
    mkdir -p $KAFKA_TARGET
@@ -10,10 +14,10 @@ fi
 
 echo "installing JDK and Kafka..."
 
-su -c "yum -y install java-1.8.0-openjdk-devel"
+su -c "apt-get -y install openjdk-8-jdk"
 
 #disabling iptables
-/etc/init.d/iptables stop
+su -c "ufw disable"
 
 if [ ! -d $KAFKA_NAME ]; then 
    tar -zxvf $KAFKA_TARGET/$KAFKA_NAME.tgz
